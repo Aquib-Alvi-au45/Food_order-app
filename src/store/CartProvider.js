@@ -1,4 +1,4 @@
-import { act } from "@testing-library/react"
+
 import { useReducer } from "react"
 import CartContext from "./cart-context"
 
@@ -46,10 +46,13 @@ const cartReducer = (state, action) => {
             updatedItems[existingCartItemIndex] = updatedItem;
         }
 
-        return{
-            items:updatedItems,
-            totalAmount:updatedTotalAmount
+        return {
+            items: updatedItems,
+            totalAmount: updatedTotalAmount
         }
+    }
+    if (action.type === 'CLEAR') {
+        return defaultCartState
     }
 
     return defaultCartState;
@@ -60,16 +63,22 @@ const CartProvider = (props) => {
     const addItemHandler = (item) => {
         dispatchCartAction({ type: "ADD", item: item })
     }
-    const removeItemHandler = (id) => {
+    const removeItemCartHandler = (id) => {
         dispatchCartAction({ type: "REMOVE", id: id })
+    }
+
+    const clearCartHandler = () => {
+        dispatchCartAction({ type: "CLEAR" })
     }
 
     const cartContext = {
         items: cartState.items,
         totalAmount: cartState.totalAmount,
         addItem: addItemHandler,
-        removeItem: removeItemHandler
+        removeItem: removeItemCartHandler,
+        clearCart: clearCartHandler
     }
+    
     return (
         <CartContext.Provider value={cartContext}>
             {props.children}
